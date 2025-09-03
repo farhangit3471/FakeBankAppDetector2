@@ -1,11 +1,13 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>App Safety Scanner</title>
+    <title>Fake Bank App Detector</title>
     <style>
-        /* Google Fonts */
+        /* All styles are now in this single CSS block */
+
         @import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=swap');
 
         :root {
@@ -16,23 +18,35 @@
             --card-bg: rgba(23, 23, 23, 0.8);
             --threat-color: #ff4d4d;
         }
+        
+        
+        
+        /* Dark Mode (default) */
+:root {
+    --bg-color: #0c0a09;
+    --text-color: #e2e8f0;
+    --card-bg: rgba(23, 23, 23, 0.8);
+    --main-accent: #00d9ff;
+    --secondary-accent: #ff0099;
+    --threat-color: #ff4d4d;
+   
+    --detector:#000000;
+    --bankapp:#d1d5db;
+}
 
-        /* Reset & Cross-Browser Fixes */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        html, body {
-            height: 100%;
-            width: 100%;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-        }
-        img, video, canvas, svg {
-            max-width: 100%;
-            height: auto;
-        }
+/* Light Mode */
+body.light-mode {
+    --bg-color: #f2f2f2;
+    --text-color: #1a1a1a;
+    --card-bg: rgba(255, 255, 255, 0.9);
+    --main-accent: #0077ff;
+    --secondary-accent: #ff4081;
+    --threat-color: #ff0000;
+     --detector:rgb(151 182 241 / 40%);
+     --bankapp:#5e618f;
+}
+
+        
 
         /* Base & Layout */
         body {
@@ -42,8 +56,10 @@
             display: grid;
             place-items: center;
             min-height: 100vh;
+            overflow-y: auto;
             overflow-x: hidden;
             padding: 2rem;
+            margin: 0;
         }
 
         .container {
@@ -77,51 +93,72 @@
             background-clip: text;
             background-image: linear-gradient(to right, var(--main-accent), var(--secondary-accent));
             filter: drop-shadow(0 0 15px var(--main-accent));
-            font-size: 1.875rem;
-            text-align: center;
+            font-size: 1.875rem; /* text-3xl */
         }
 
-        @media (min-width: 640px) { .header-title { font-size: 3rem; } }
-        @media (min-width: 1024px) { .header-title { font-size: 4rem; } }
+        @media (min-width: 640px) {
+            .header-title { font-size: 3rem; } /* sm:text-5xl */
+        }
+        @media (min-width: 1024px) {
+            .header-title { font-size: 4rem; } /* lg:text-6xl */
+        }
 
-        .header-subtitle { display: none; } /* Removed subtitle as requested */
+        .header-subtitle {
+            font-size: 0.875rem; /* text-sm */
+            color: #94a3b8; /* text-gray-400 */
+            margin-top: 0.5rem;
+        }
 
         .main-status-text {
-            font-size: 1.25rem;
-            color: #94a3b8;
+            font-size: 1.25rem; /* text-xl */
+            color: #6ca5ff; /* text-gray-400 */
             transition: opacity 0.5s ease;
         }
-        @media (min-width: 1024px) { .main-status-text { font-size: 1.5rem; } }
+
+        @media (min-width: 1024px) {
+            .main-status-text { font-size: 1.5rem; } /* lg:text-2xl */
+        }
 
         .sub-status-text {
-            font-size: 0.875rem;
-            color: #6b7280;
+            font-size: 0.875rem; /* text-sm */
+            color: #6b7280; /* text-gray-500 */
             margin-top: 0.5rem;
             opacity: 0;
             transition: opacity 0.5s ease;
         }
-        @media (min-width: 1024px) { .sub-status-text { font-size: 1rem; } }
+        @media (min-width: 1024px) {
+            .sub-status-text { font-size: 1rem; } /* lg:text-base */
+        }
 
-        .log-display-entry { line-height: 1.6; transition: color 0.3s; color: #d1d5db; }
+        .log-display-entry {
+            line-height: 1.6;
+            transition: color 0.3s;
+            color: var(--bankapp)/* text-gray-300 */
+        }
         .log-display-entry.success { color: var(--main-accent); }
         .log-display-entry.error { color: var(--secondary-accent); }
         .log-display-entry:first-child { margin-top: 0; }
         .log-display-entry + .log-display-entry { margin-top: 0.5rem; }
 
+
         .info-panel-title {
-            font-size: 1.5rem;
+            font-size: 1.5rem; /* text-2xl */
             font-weight: 700;
             text-align: center;
             color: var(--main-accent);
         }
 
-        .progress-text { font-size: 0.875rem; color: #94a3b8; font-weight: 700; }
+        .progress-text {
+            font-size: 0.875rem; /* text-sm */
+            color: #94a3b8; /* text-gray-400 */
+            font-weight: 700;
+        }
 
         .file-input-label {
             display: inline-block;
             cursor: pointer;
             padding: 1rem 2rem;
-            border-radius: 9999px;
+            border-radius: 9999px; /* rounded-full */
             background: var(--main-accent);
             color: var(--bg-color);
             font-weight: 700;
@@ -130,7 +167,11 @@
             transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
             box-shadow: 4px 4px 15px rgba(0, 217, 255, 0.2);
         }
-        .file-input-label:hover { box-shadow: 0 0 20px var(--main-accent); color: white; transform: translateY(-2px); }
+        .file-input-label:hover {
+            box-shadow: 0 0 20px var(--main-accent);
+            color: white;
+            transform: translateY(-2px);
+        }
 
         /* Components */
         .scanner-area {
@@ -144,21 +185,59 @@
             overflow: hidden;
             border: 2px solid var(--main-accent);
             border-radius: 1.5rem;
-            background: rgba(0, 0, 0, 0.4);
+            background: var(--detector);
             box-shadow: 0 0 50px rgba(0, 217, 255, 0.2);
             transition: all 0.5s ease-in-out;
             will-change: box-shadow;
         }
 
-        .scanner-area::before, .scanner-area::after { content: ''; position: absolute; border-radius: 50%; pointer-events: none; }
-        .scanner-area.scanning::before { width: 200%; height: 200%; border: 5px solid var(--secondary-accent); border-right-color: transparent; animation: vortex-spin 4s linear infinite; }
-        .scanner-area.scanning::after { width: 150%; height: 150%; border: 5px solid var(--main-accent); border-left-color: transparent; animation: vortex-spin 3s linear infinite reverse; }
+        .scanner-area::before, .scanner-area::after {
+            content: '';
+            position: absolute;
+            border-radius: 50%;
+            pointer-events: none;
+        }
 
-        @keyframes vortex-spin { 0% { transform: translate(-50%, -50%) rotate(0deg); } 100% { transform: translate(-50%, -50%) rotate(360deg); } }
+        .scanner-area.scanning::before {
+            width: 200%;
+            height: 200%;
+            border: 5px solid var(--secondary-accent);
+            border-right-color: transparent;
+            animation: vortex-spin 4s linear infinite;
+        }
 
-        .scan-line { position: absolute; width: 100%; height: 4px; background: linear-gradient(90deg, transparent, var(--secondary-accent), transparent); box-shadow: 0 0 20px var(--secondary-accent); opacity: 0; transition: opacity 0.5s ease; }
-        .scanner-area.scanning .scan-line { opacity: 1; animation: scan-line-move 2s linear infinite; }
-        @keyframes scan-line-move { 0% { top: 0%; transform: translateY(-100%); } 100% { top: 100%; transform: translateY(0); } }
+        .scanner-area.scanning::after {
+            width: 150%;
+            height: 150%;
+            border: 5px solid var(--main-accent);
+            border-left-color: transparent;
+            animation: vortex-spin 3s linear infinite reverse;
+        }
+
+        @keyframes vortex-spin {
+            0% { transform: translate(-50%, -50%) rotate(0deg); }
+            100% { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+
+        .scan-line {
+            position: absolute;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, transparent, var(--secondary-accent), transparent);
+            box-shadow: 0 0 20px var(--secondary-accent);
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .scanner-area.scanning .scan-line {
+            opacity: 1;
+            animation: scan-line-move 2s linear infinite;
+        }
+
+        @keyframes scan-line-move {
+            0% { top: 0%; transform: translateY(-100%); }
+            100% { top: 100%; transform: translateY(0); }
+        }
 
         .info-panel {
             grid-area: aside;
@@ -183,52 +262,219 @@
             transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
             padding: 1rem 2rem;
             width: 100%;
+            border-radius: 9999px; /* rounded-full */
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); /* shadow-lg */
+        }
+
+        .scan-button:hover {
+            box-shadow: 0 0 20px var(--main-accent);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .scan-button:active {
+            transform: scale(0.95);
+        }
+
+        .scan-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: var(--secondary-accent);
+            transition: left 0.3s ease-in-out;
+        }
+
+        .scan-button:hover::before {
+            left: 0;
+        }
+
+        .scan-button span {
+            position: relative;
+            z-index: 10;
+        }
+
+        .scan-button:disabled {
+            background-color: #4a4a4a;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        .progress-bar-container {
+            height: 8px;
+            background-color: #333;
             border-radius: 9999px;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
         }
-        .scan-button:hover { box-shadow: 0 0 20px var(--main-accent); color: white; transform: translateY(-2px); }
-        .scan-button:active { transform: scale(0.95); }
-        .scan-button::before { content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: var(--secondary-accent); transition: left 0.3s ease-in-out; }
-        .scan-button:hover::before { left: 0; }
-        .scan-button span { position: relative; z-index: 10; }
-        .scan-button:disabled { background-color: #4a4a4a; cursor: not-allowed; box-shadow: none; }
 
-        .progress-bar-container { height: 8px; background-color: #333; border-radius: 9999px; overflow: hidden; }
-        .progress-bar { height: 100%; background: linear-gradient(90deg, var(--secondary-accent), var(--main-accent)); transition: width 0.3s ease-out; }
-
-        .log-container { flex-grow: 1; overflow-y: auto; border: 1px dashed rgba(255, 255, 255, 0.2); padding: 1rem; border-radius: 0.5rem; height: 200px; }
-
-        .threat-glow { animation: text-glow-red 1.5s ease-in-out infinite alternate; color: var(--threat-color); }
-        @keyframes text-glow-red { 0%, 100% { text-shadow: 0 0 5px var(--threat-color), 0 0 10px var(--threat-color); } 50% { text-shadow: 0 0 10px var(--threat-color), 0 0 20px var(--threat-color), 0 0 30px var(--threat-color); } }
-
-        .scanner-area.threat { animation: border-flash-red 1s linear infinite; }
-        @keyframes border-flash-red { 0%, 100% { box-shadow: 0 0 20px var(--threat-color), inset 0 0 10px var(--threat-color); } 50% { box-shadow: 0 0 40px var(--threat-color), inset 0 0 20px var(--threat-color); } }
-
-        .details-panel { grid-area: main; display: none; flex-direction: column; padding: 2rem; background: rgba(0, 0, 0, 0.4); border: 2px solid var(--main-accent); border-radius: 1.5rem; color: var(--text-color); overflow-y: auto; }
-
-        /* Footer removed as requested */
-
-        /* Responsive Adjustments */
-        @media (max-width: 768px) {
-            .container { padding: 1rem; }
-            .scanner-area { height: 50vh; min-height: 300px; }
-            .info-panel { padding: 1rem; }
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--secondary-accent), var(--main-accent));
+            transition: width 0.3s ease-out;
         }
+
+        .log-container {
+            flex-grow: 1;
+            overflow-y: auto;
+            border: 1px dashed rgba(255, 255, 255, 0.2);
+            padding: 1rem;
+            border-radius: 0.5rem;
+            height: 200px;
+        }
+
+        .threat-glow {
+            animation: text-glow-red 1.5s ease-in-out infinite alternate;
+            color: var(--threat-color);
+        }
+
+        @keyframes text-glow-red {
+            0%, 100% { text-shadow: 0 0 5px var(--threat-color), 0 0 10px var(--threat-color); }
+            50% { text-shadow: 0 0 10px var(--threat-color), 0 0 20px var(--threat-color), 0 0 30px var(--threat-color); }
+        }
+
+        .scanner-area.threat {
+            animation: border-flash-red 1s linear infinite;
+        }
+
+        @keyframes border-flash-red {
+            0%, 100% { box-shadow: 0 0 20px var(--threat-color), inset 0 0 10px var(--threat-color); }
+            50% { box-shadow: 0 0 40px var(--threat-color), inset 0 0 20px var(--threat-color); }
+        }
+
+        .details-panel {
+            grid-area: main;
+            display: none;
+            flex-direction: column;
+            padding: 2rem;
+            background: rgba(0, 0, 0, 0.4);
+            border: 2px solid var(--main-accent);
+            border-radius: 1.5rem;
+            color: var(--text-color);
+            overflow-y: auto;
+        }
+
+        .footer-text {
+            text-align: center;
+            color: #718096; /* text-gray-600 */
+            font-size: 0.75rem; /* text-xs */
+            padding-top: 1rem;
+            padding-bottom: 1rem;
+        }
+        @media (max-width: 480px) {
+    .container {
+        grid-template-areas:
+            "header"
+            "main"
+            "aside";
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .scanner-area {
+        height: 50vh;
+        min-height: 300px;
+    }
+
+    .header-title {
+        font-size: 2rem;
+    }
+
+    .info-panel {
+        padding: 1rem;
+    }
+
+    .file-input-label, .scan-button, #theme-toggle {
+        padding: 0.75rem 1.5rem;
+        font-size: 0.85rem;
+    }
+
+    #status-display {
+        padding: 1rem;
+        font-size: 0.9rem;
+    }
+
+    .progress-bar-container {
+        height: 6px;
+    }
+
+    .log-container {
+        height: 150px;
+        font-size: 0.85rem;
+    }
+}
+@media (min-width: 481px) and (max-width: 1023px) {
+    .container {
+        grid-template-areas:
+            "header"
+            "main"
+            "aside";
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+
+    .scanner-area {
+        height: 55vh;
+    }
+
+    .header-title {
+        font-size: 2.5rem;
+    }
+
+    .file-input-label, .scan-button, #theme-toggle {
+        padding: 0.85rem 1.8rem;
+        font-size: 0.9rem;
+    }
+
+    .log-container {
+        height: 180px;
+    }
+}
+
+        @media (min-width: 1024px) {
+    .container {
+        grid-template-areas:
+            "header header"
+            "main aside";
+        grid-template-columns: 2fr 1fr;
+        gap: 2rem;
+    }
+
+    .scanner-area {
+        height: 65vh;
+    }
+
+    .header-title {
+        font-size: 3rem;
+    }
+}
+
     </style>
 </head>
 <body>
     <div class="container">
         <!-- Header -->
         <header class="text-center py-4 grid-area-header">
-            <h1 class="header-title">SECURE APP ANALYZER</h1>
+            <h1 class="header-title">
+                Fake Bank App Detector
+            </h1>
+           <button id="theme-toggle" style="position:absolute; top:20px; right:20px; padding:0.5rem 1rem; border-radius:0.5rem; border:none; cursor:pointer; background-color:var(--main-accent); color:var(--bg-color); font-weight:bold;">
+    Toggle Theme
+</button>
+
         </header>
 
         <!-- Main Scanner Area -->
         <main id="scanner-main" class="scanner-area">
             <div class="scan-line"></div>
             <div id="status-display" class="text-center">
-                <p id="main-status" class="main-status-text">Awaiting Command...</p>
-                <p id="sub-status" class="sub-status-text">Select an APK file to begin analysis.</p>
+                <p id="main-status" class="main-status-text">
+                    Please Select An Apk File ...
+                </p>
+                <p id="sub-status" class="sub-status-text">
+                    Select an APK file to begin analysis.
+                </p>
             </div>
         </main>
 
@@ -253,15 +499,27 @@
 
             <!-- Control Button -->
             <div style="display: flex; flex-direction: column; gap: 1rem; align-items: center; margin-top: auto;">
-                <label for="apk-file-input" class="file-input-label"><span>Select an APK file</span></label>
+                <label for="apk-file-input" class="file-input-label">
+                    <span>Select an APK file</span>
+                </label>
                 <input type="file" id="apk-file-input" accept=".apk" style="display: none;">
-                <button id="scan-btn" class="scan-button"><span>Initiate Scan</span></button>
+
+                <button id="scan-btn" class="scan-button">
+                    <span>Initiate Scan</span>
+                </button>
             </div>
         </aside>
+
+        <!-- Footer -->
+        <footer class="footer-text">
+         
+        </footer>
+
+
+
     </div>
 
 <script>
-// Your original JS code (unchanged)
 document.addEventListener("DOMContentLoaded", () => {
     const fileInput = document.getElementById("apk-file-input");
     const scanBtn = document.getElementById("scan-btn");
@@ -294,7 +552,10 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     scanBtn.addEventListener("click", async () => {
-        if (!selectedFile) { log("[ERROR] No APK file selected.", "error"); return; }
+        if (!selectedFile) {
+            log("[ERROR] No APK file selected.", "error");
+            return;
+        }
         if (scanning) return;
 
         scanning = true;
@@ -307,10 +568,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
         log(`[SYSTEM] Uploading ${selectedFile.name} for analysis...`);
 
+        // Create form data
         const formData = new FormData();
         formData.append("apk", selectedFile);
 
         try {
+            // Show progress animation
             let progress = 0;
             const interval = setInterval(() => {
                 progress += Math.floor(Math.random() * 15) + 5;
@@ -319,14 +582,23 @@ document.addEventListener("DOMContentLoaded", () => {
                 progressText.textContent = progress + "%";
             }, 500);
 
-            const response = await fetch("/scan", { method: "POST", body: formData });
+            // Send to backend
+            const response = await fetch("/scan", {
+                method: "POST",
+                body: formData
+            });
+
             clearInterval(interval);
             progressBar.style.width = "100%";
             progressText.textContent = "100%";
 
             const result = await response.json();
-            if (result.error) { throw new Error(result.error); }
+            
+            if (result.error) {
+                throw new Error(result.error);
+            }
 
+            // Display actual results from backend
             displayResults(result);
             
         } catch (error) {
@@ -342,6 +614,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     function displayResults(result) {
+        // Determine risk level based on actual backend results
         let statusText, statusClass;
         
         if (result.overall_risk === "Dangerous") {
@@ -369,7 +642,20 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 });
-</script>
-</body>
-</html>
 
+
+const themeToggleBtn = document.getElementById("theme-toggle");
+
+themeToggleBtn.addEventListener("click", () => {
+    document.body.classList.toggle("light-mode");
+});
+
+
+
+</script>
+
+
+</body>
+
+
+</html>
